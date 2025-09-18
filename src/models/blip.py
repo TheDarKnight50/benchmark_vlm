@@ -1,41 +1,42 @@
-# In src/models/blip.py
-
 from transformers import BlipProcessor, BlipForConditionalGeneration
 from PIL import Image
+import torch  # <-- ADD IMPORT
+import time   # <-- ADD IMPORT
 
 class BLIPBenchmark:
     def __init__(self, model_name="Salesforce/blip-image-captioning-large"):
-        """
-        Initializes and loads the BLIP model and processor for image captioning.
-        """
         print(f"Loading BLIP model: '{model_name}'...")
+        self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.processor = BlipProcessor.from_pretrained(model_name)
-        self.model = BlipForConditionalGeneration.from_pretrained(model_name)
+        self.model = BlipForConditionalGeneration.from_pretrained(model_name).to(self.device)
         print("BLIP model loaded successfully.")
 
     def run_image_captioning(self, image_path: str):
-        """
-        Generates a caption for a single image.
-        
-        Args:
-            image_path (str): The local path to the image file.
-            
-        Returns:
-            A string containing the generated caption.
-        """
         try:
             raw_image = Image.open(image_path).convert("RGB")
         except FileNotFoundError:
             print(f"Error: Image not found at {image_path}")
-            return None
+            return None, 0, 0
+
+        inputs = self.processor(raw_image, return_tensors="pt").to(self.device)
         
-        # Process the image
-        inputs = self.processor(raw_image, return_tensors="pt")
+        # --- Start Measurement ---
+        peak_memory_mb = 0.0 # Default memory to 0 for CPU
+        if self.device == 'cuda': # <-- ADD THIS CHECK
+            torch.cuda.reset_peak_memory_stats(self.device)
+            
+        start_time = time.time()
         
-        # Generate a caption (token IDs)
-        out = self.model.generate(**inputs, max_new_tokens=50)
+        with torch.no_grad():
+            out = self.model.generate(**inputs, max_new_tokens=50)
+            
+        # --- End Measurement ---
+        end_time = time.time()
+        latency = end_time - start_time
+
+        if self.device == 'cuda': # <-- ADD THIS CHECK
+            peak_memory_mb = torch.cuda.max_memory_allocated(self.device) / 1e6
         
-        # Decode the token IDs to a human-readable string
         caption = self.processor.decode(out[0], skip_special_tokens=True)
         
-        return caption
+        return caption, latency, peak_memory_mb

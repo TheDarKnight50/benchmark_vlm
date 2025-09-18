@@ -1,49 +1,47 @@
-# In src/models/clip.py
-
 from transformers import CLIPProcessor, CLIPModel
 from PIL import Image
+import torch  # <-- ADD IMPORT
+import time   # <-- ADD IMPORT
 
 class CLIPBenchmark:
     def __init__(self, model_name="openai/clip-vit-base-patch32"):
-        """
-        Initializes and loads the CLIP model and processor.
-        The model is loaded from the HuggingFace Hub.
-        """
         print(f"Loading CLIP model: '{model_name}'...")
-        self.model = CLIPModel.from_pretrained(model_name)
+        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        self.model = CLIPModel.from_pretrained(model_name).to(self.device)
         self.processor = CLIPProcessor.from_pretrained(model_name)
         print("CLIP model loaded successfully.")
 
     def run_zeroshot_classification(self, image_path: str, text_prompts: list):
-        """
-        Performs zero-shot classification on a single image.
-        
-        Args:
-            image_path (str): The local path to the image file.
-            text_prompts (list): A list of text strings to classify the image against.
-            
-        Returns:
-            A dictionary mapping each text prompt to its probability score.
-        """
         try:
             image = Image.open(image_path)
         except FileNotFoundError:
             print(f"Error: Image not found at {image_path}")
-            return None
-        
-        # Process the inputs
+            return None, 0, 0
+
         inputs = self.processor(
             text=text_prompts, images=image, return_tensors="pt", padding=True
-        )
+        ).to(self.device)
+
+        # --- Start Measurement ---
+        peak_memory_mb = 0.0 # Default memory to 0 for CPU
+        if self.device == 'cuda': # <-- ADD THIS CHECK
+            torch.cuda.reset_peak_memory_stats(self.device)
         
-        # Get model outputs
-        outputs = self.model(**inputs)
+        start_time = time.time()
+
+        with torch.no_grad():
+            outputs = self.model(**inputs)
+        
+        # --- End Measurement ---
+        end_time = time.time()
+        latency = end_time - start_time
+        
+        if self.device == 'cuda': # <-- ADD THIS CHECK
+            peak_memory_mb = torch.cuda.max_memory_allocated(self.device) / 1e6
         
         # Calculate probabilities
         logits_per_image = outputs.logits_per_image
-        probs = logits_per_image.softmax(dim=1).squeeze() # Use squeeze to get a 1D tensor
-        
-        # Create a dictionary of prompts to probabilities
+        probs = logits_per_image.softmax(dim=1).squeeze()
         results = {prompt: prob.item() for prompt, prob in zip(text_prompts, probs)}
         
-        return results
+        return results, latency, peak_memory_mb
