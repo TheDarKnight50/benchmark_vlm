@@ -1,6 +1,7 @@
 # In src/main_evaluate.py
 
 from models.clip import CLIPBenchmark
+from models.blip import BLIPBenchmark  # <-- ADD THIS IMPORT
 import os
 
 def main():
@@ -9,36 +10,44 @@ def main():
     """
     print("--- Starting VLM Benchmark Test ---")
     
-    # --- 1. Initialize the Model ---
-    # This will create an instance of our CLIP class, which loads the model.
-    clip_model = CLIPBenchmark()
-    
-    # --- 2. Prepare Data ---
-    # For this test, you need a sample image.
-    # TODO: Replace with your own image file.
+    # --- Check for test image ---
     image_filename = "cat.jpeg" 
-    
-    # Check if the image exists in the project's root directory
     if not os.path.exists(image_filename):
         print(f"\nERROR: Test image '{image_filename}' not found.")
-        print("Please download a sample image, name it 'cat.jpg', and place it in the 'benchmark_vlm' root directory.")
+        print(f"Please place a sample image named '{image_filename}' in the root directory.")
         return
         
+    # =======================================================
+    #               CLIP Zero-Shot Test
+    # =======================================================
+    clip_model = CLIPBenchmark()
     imagenet_prompts = ["a photo of a cat", "a photo of a dog", "a photo of a bird"]
 
-    # --- 3. Run Inference ---
-    print(f"\nRunning zero-shot classification on '{image_filename}'...")
-    results = clip_model.run_zeroshot_classification(
+    print(f"\nRunning CLIP zero-shot classification on '{image_filename}'...")
+    clip_results = clip_model.run_zeroshot_classification(
         image_path=image_filename,
         text_prompts=imagenet_prompts
     )
     
-    # --- 4. Display Results ---
-    if results:
-        print("\n--- Results ---")
-        for prompt, score in results.items():
+    if clip_results:
+        print("\n--- CLIP Results ---")
+        for prompt, score in clip_results.items():
             print(f"{prompt}: {score:.4f}")
-        print("---------------")
+        print("--------------------")
+
+    # =======================================================
+    #               BLIP Captioning Test
+    # =======================================================
+    blip_model = BLIPBenchmark() # <-- INSTANTIATE BLIP MODEL
+
+    print(f"\nRunning BLIP image captioning on '{image_filename}'...")
+    caption = blip_model.run_image_captioning(image_path=image_filename) # <-- RUN CAPTIONING
+
+    if caption:
+        print("\n--- BLIP Results ---")
+        print(f"Generated Caption: {caption}") # <-- PRINT THE CAPTION
+        print("--------------------")
+
 
 if __name__ == "__main__":
     main()
