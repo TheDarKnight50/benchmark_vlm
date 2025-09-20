@@ -1,0 +1,9 @@
+model,image,task,result,latency_s,memory_mb
+CLIP,cat.jpeg,Zero-Shot Classification,Top Prediction: a photo of a cat (0.99),0.1489,0.00
+BLIP,cat.jpeg,Image Captioning,there is a white cat laying in the grass on the ground,3.9126,0.00
+CLIP,bike.jpeg,Zero-Shot Classification,Top Prediction: a photo of a car (0.45),0.0989,0.00
+BLIP,bike.jpeg,Image Captioning,a close up of a black motorcycle on a white background,2.4365,0.00
+CLIP,car.jpeg,Zero-Shot Classification,Top Prediction: a photo of a car (1.00),0.0947,0.00
+BLIP,car.jpeg,Image Captioning,a close up of a red and black buggy on a white background,2.5513,0.00
+CLIP,dog.jpeg,Zero-Shot Classification,Top Prediction: a photo of a dog (1.00),0.0753,0.00
+BLIP,dog.jpeg,Image Captioning,puppy laying on the floor looking at the camera,2.3918,0.00
