@@ -1,3 +1,4 @@
+accelerate==1.10.1
 ackermann-msgs==2.0.2
 action-msgs==1.2.1
 actionlib-msgs==4.2.4
@@ -70,6 +71,7 @@ nvidia-nvtx-cu12==12.8.90
 osrf-pycommon==2.0.2
 packaging==25.0
 pillow==11.3.0
+psutil==7.1.0
 python-qt-binding==1.1.2
 PyYAML==6.0.2
 qt-dotgraph==2.2.3
@@ -167,7 +169,7 @@ tokenizers==0.22.0
 torch==2.8.0
 tqdm==4.67.1
 trajectory-msgs==4.2.4
-transformers==4.56.1
+transformers==4.56.2
 triton==3.4.0
 typing_extensions==4.15.0
 unique-identifier-msgs==2.2.1

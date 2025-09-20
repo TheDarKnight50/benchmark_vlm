@@ -1,9 +1,13 @@
 model,image,task,result,latency_s,memory_mb
-CLIP,cat.jpeg,Zero-Shot Classification,Top Prediction: a photo of a cat (0.99),0.1489,0.00
-BLIP,cat.jpeg,Image Captioning,there is a white cat laying in the grass on the ground,3.9126,0.00
-CLIP,bike.jpeg,Zero-Shot Classification,Top Prediction: a photo of a car (0.45),0.0989,0.00
-BLIP,bike.jpeg,Image Captioning,a close up of a black motorcycle on a white background,2.4365,0.00
-CLIP,car.jpeg,Zero-Shot Classification,Top Prediction: a photo of a car (1.00),0.0947,0.00
-BLIP,car.jpeg,Image Captioning,a close up of a red and black buggy on a white background,2.5513,0.00
-CLIP,dog.jpeg,Zero-Shot Classification,Top Prediction: a photo of a dog (1.00),0.0753,0.00
-BLIP,dog.jpeg,Image Captioning,puppy laying on the floor looking at the camera,2.3918,0.00
+CLIP,cat.jpeg,Zero-Shot Classification,Top Prediction: a photo of a cat (0.99),0.0858,0.00
+BLIP-Caption,cat.jpeg,Image Captioning,there is a white cat laying in the grass on the ground,2.4307,0.00
+BLIP-VQA,cat.jpeg,Visual Question Answering,Q: What is in this photo? A: cat,0.7987,0.00
+CLIP,bike.jpeg,Zero-Shot Classification,Top Prediction: a photo of a motorcycle (1.00),0.0790,0.00
+BLIP-Caption,bike.jpeg,Image Captioning,a close up of a black motorcycle on a white background,2.3206,0.00
+BLIP-VQA,bike.jpeg,Visual Question Answering,Q: What is in this photo? A: motorcycle,0.7377,0.00
+CLIP,car.jpeg,Zero-Shot Classification,Top Prediction: a photo of a car (1.00),0.0858,0.00
+BLIP-Caption,car.jpeg,Image Captioning,a close up of a red and black buggy on a white background,2.2879,0.00
+BLIP-VQA,car.jpeg,Visual Question Answering,Q: What is in this photo? A: car,0.6694,0.00
+CLIP,dog.jpeg,Zero-Shot Classification,Top Prediction: a photo of a dog (1.00),0.0793,0.00
+BLIP-Caption,dog.jpeg,Image Captioning,puppy laying on the floor looking at the camera,2.2568,0.00
+BLIP-VQA,dog.jpeg,Visual Question Answering,Q: What is in this photo? A: puppy,0.6460,0.00
